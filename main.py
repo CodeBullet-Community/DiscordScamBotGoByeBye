@@ -26,7 +26,6 @@ async def on_guild_join(guild):
         os.mkdir(f"./guilds/{guild.id}/all")
 
 
-
 async def ban(member : discord.Member, reason, ban_message):
     if len(reason) > 512:
         reason = reason[0:511]
@@ -57,6 +56,7 @@ async def on_message(message):
         print(4)
         with open(f"./guilds/{message.guild.id}/all/{message.author.id}.txt", "a") as file:
             file.write(f"TimeStamp: {datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')} Author: {message.author}, Channel ID: {message.channel.id} ({message.channel.name}), Message: {message.content}\n")
+     
             
-client.run("")
+client.run("OTM1NjAzMDExMDI2MzAwOTk5.YfBCNA.cJCR4_HEGmkzI1Sb2VlUYWZKij4")
 
