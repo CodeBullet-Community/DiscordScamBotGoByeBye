@@ -53,7 +53,6 @@ async def on_message(message):
         await unban(message.author, "Bot trap")
 
     else:
-        print(4)
         with open(f"./guilds/{message.guild.id}/all/{message.author.id}.txt", "a") as file:
             file.write(f"TimeStamp: {datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')} Author: {message.author}, Channel ID: {message.channel.id} ({message.channel.name}), Message: {message.content}\n")
      
