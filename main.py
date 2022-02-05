@@ -58,5 +58,5 @@ async def on_message(message):
             file.write(f"TimeStamp: {datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')} Author: {message.author}, Channel ID: {message.channel.id} ({message.channel.name}), Message: {message.content}\n")
      
             
-client.run("OTM1NjAzMDExMDI2MzAwOTk5.YfBCNA.cJCR4_HEGmkzI1Sb2VlUYWZKij4")
+client.run("")
 
