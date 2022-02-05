@@ -1,12 +1,8 @@
-from email import message
 import discord
 import discord.ext.commands
 import datetime
 import re
 import os
-
-
-# import asyncio
 
 
 client = discord.Client()
