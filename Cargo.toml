@@ -10,3 +10,5 @@ edition = "2021"
 serenity = "0.10"
 serde = {version = "1.0", features = ["derive"]}
 tokio = {version = "1.16", features = ["full"]}
+log = "0.4"
+env_logger = "0.9"
