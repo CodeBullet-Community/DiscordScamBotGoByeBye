@@ -23,6 +23,7 @@ serde_ini = {version = "0.2", optional = true}
 #toml isn't a feature because it's a crate
 [features]
 default = ["env"]
+all = ["env", "yaml", "toml", "ini", "json"]
 env = ["envy"]
 yaml = ["serde_yaml"]
 ini = ["serde_ini"]
