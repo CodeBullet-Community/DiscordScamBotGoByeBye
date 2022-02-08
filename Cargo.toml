@@ -12,3 +12,25 @@ serde = {version = "1.0", features = ["derive"]}
 tokio = {version = "1.16", features = ["full"]}
 log = "0.4"
 env_logger = "0.9"
+lazy_static = "1.4"
+dirs = "4.0"
+envy = {version = "0.4", optional = true}
+toml = {version = "0.5", optional = true}
+serde_yaml = {version = "0.8", optional = true}
+serde_json = {version = "1.0", optional = true}
+serde_ini = {version = "0.2", optional = true}
+
+#build deps and features are to enable config to be gained from a selection of config files
+[build-dependencies]
+const-gen = "1.0.0"
+toml = {version = "0.5"}
+cargo_toml = "0.11"
+serde = "1.0"
+
+#toml isn't a feature because it's a crate
+[features]
+default = ["env"]
+env = ["envy"]
+yaml = ["serde_yaml"]
+ini = ["serde_ini"]
+json = ["serde_json"]

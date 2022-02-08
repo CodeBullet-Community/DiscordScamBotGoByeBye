@@ -3,9 +3,10 @@ extern crate tokio;
 extern crate serde;
 extern crate log;
 extern crate env_logger;
-
+mod utils;
 use serenity::{Client, framework, client::{EventHandler, Context}, model::channel::Message};
 use log::error;
+
 
 #[tokio::main]
 async fn main() {
