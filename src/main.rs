@@ -11,6 +11,7 @@ use log::error;
 #[tokio::main]
 async fn main() {
     env_logger::init();
+    let config = utils::get_config();
     let client = Client::builder(std::env::var("DISCORD_TOKEN").expect("no env var DISCORD_TOKEN"))
         .framework(framework::StandardFramework::new());
 }

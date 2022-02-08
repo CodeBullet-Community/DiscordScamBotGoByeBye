@@ -6,8 +6,6 @@ version = 3
 name = "DiscordScamBotGoByeBye"
 version = "0.1.0"
 dependencies = [
- "cargo_toml",
- "const-gen",
  "dirs",
  "env_logger",
  "envy",
@@ -133,17 +131,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c4872d67bab6358e59559027aa3b9157c53d9358c51423c17554809a8858e0f8"
 
 [[package]]
-name = "cargo_toml"
-version = "0.11.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e270ef0cd868745878982f7ce470aa898d0d4bb248af67f0cf66f54617913ef"
-dependencies = [
- "serde",
- "serde_derive",
- "toml",
-]
-
-[[package]]
 name = "cc"
 version = "1.0.72"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -173,26 +160,6 @@ name = "command_attr"
 version = "0.3.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9e74a021f9d0b577821bf9f5b1a2be88677e95ee05713e5d44fb4236cfa1744c"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "const-gen"
-version = "1.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3b64bb40149acd2f4fdabe5f5fade7819a5fd80c3ee7bf896ca02515f8d1ffb2"
-dependencies = [
- "const-gen-derive",
-]
-
-[[package]]
-name = "const-gen-derive"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ed46321c257fee2e57a6b23b7852c60a3f20e16db9f2b275a7e3c59121862ef"
 dependencies = [
  "proc-macro2",
  "quote",

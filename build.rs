@@ -1,9 +1,5 @@
-extern crate const_gen;
-extern crate toml;
-extern crate serde;
-extern crate cargo_toml;
 
-use std::{fs, error::Error, io::Write, ffi::OsString};
+use std::{fs, error::Error};
 
 fn main() -> Result<(),Box<dyn Error>>{
     println!("cargo:rerun-if-changed=build.rs");
@@ -16,14 +12,17 @@ const SUPPORTED_CONF_FORMATS:[&str;4] = ["yaml","toml", "json", "ini"];
 fn feature_handle()->Result<(),Box<dyn Error>> {
     println!("cargo:rerun-if-changed=Cargo.toml");
 
-    let features:Vec<String> = toml::from_str::<cargo_toml::Manifest>(fs::read_to_string("Cargo.toml")?.as_str())?
-        //I think the fact I have to derefence and clone the keys is stupid as well
-        .features.keys().map(|v|(*v).clone()).collect();
-    let config_file_features:Vec<String> = features.iter()
-        .filter(|s|SUPPORTED_CONF_FORMATS.contains(&s.as_str()))
-        .map(|s|(*s).clone()).collect();
+    let config_file_features:Vec<String> = std::env::vars().map(|v|v.0)
+        .filter(|v|SUPPORTED_CONF_FORMATS
+            .map(|f|"CARGO_FEATURE_".to_owned()+f.to_uppercase().as_str())
+            .contains(v))
+        .map(|v|SUPPORTED_CONF_FORMATS
+            .map(|f|"CARGO_FEATURE_".to_owned()+f.to_uppercase().as_str())
+            .iter().position(|m|m==&v).unwrap())
+        .map(|i|SUPPORTED_CONF_FORMATS[i].to_string())
+        .collect();
     // this is a rather hacky way to do this but oh well
-    let config_declarations = format!("const CONFIG_FILE_TYPES:[&str;{}] = [{}]",config_file_features.len(),config_file_features.join(","));
+    let config_declarations = format!("const CONFIG_FILE_TYPES:[&str;{}] = [{}];",config_file_features.len(),config_file_features.iter().map(|feat|"\"".to_owned()+feat+"\"").collect::<Vec<String>>().join(","));
     fs::write({let mut  x = std::env::var_os("OUT_DIR").unwrap().into_string().unwrap();x.push_str("/feature_gen.rs"); x}, config_declarations)?;
     Ok(())
 }

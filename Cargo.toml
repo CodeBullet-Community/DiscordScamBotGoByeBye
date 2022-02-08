@@ -20,13 +20,7 @@ serde_yaml = {version = "0.8", optional = true}
 serde_json = {version = "1.0", optional = true}
 serde_ini = {version = "0.2", optional = true}
 
-#build deps and features are to enable config to be gained from a selection of config files
-[build-dependencies]
-const-gen = "1.0.0"
-toml = {version = "0.5"}
-cargo_toml = "0.11"
-serde = "1.0"
-
+#features are to enable config to be gained from a selection of config files
 #toml isn't a feature because it's a crate
 [features]
 default = ["env"]
