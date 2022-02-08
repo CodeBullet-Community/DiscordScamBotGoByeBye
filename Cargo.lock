@@ -9,7 +9,6 @@ dependencies = [
  "dirs",
  "env_logger",
  "envy",
- "lazy_static",
  "log",
  "serde",
  "serde_ini",
