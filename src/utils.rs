@@ -10,7 +10,7 @@ extern crate toml;
 extern crate serde_yaml;
 #[cfg(feature = "env")]
 extern crate envy;
-use std::{fs::read_to_string, fmt::Debug};
+use std::{fmt::Debug};
 
 use serde::{Serialize,Deserialize};
 use dirs::config_dir;
@@ -22,7 +22,7 @@ struct InternConfig{
     token:Option<String>
 }
 pub struct Config {
-    token:String
+    pub token:String
 }
 #[derive(Debug)]
 enum ConfigAttrMissing{TOKEN}
@@ -49,7 +49,7 @@ impl Combinable for InternConfig {
     }
 }
 impl<T:Combinable> Combinable for Option<T>{
-    fn union(mut self, other:Self)->Self{
+    fn union(self, other:Self)->Self{
         if other.is_none(){
             self
         }
@@ -98,7 +98,7 @@ pub fn get_config()->Config{
     }
     config.expect("no config provided").verify().unwrap()
 }
-fn config_file_loc(filetype:&str) -> String {
+pub fn config_file_loc(filetype:&str) -> String {
     config_dir().unwrap()
         .join(env!("CARGO_PKG_NAME"))
         .join(format!("config.{}",filetype)).to_str().unwrap().to_string()
