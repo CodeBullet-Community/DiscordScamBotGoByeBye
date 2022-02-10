@@ -33,8 +33,9 @@ impl EventHandler for Handler {
         info!("bot is ready");
     }
     async fn message(&self, context: Context, message:Message){
-        println!("Message: [{}]({}): {}",
+        info!("Message: {}\t[#{}]({}): {}",
             message.guild(&context).await.expect("The guild or message vanished as we queried it").name,
+            message.channel(&context).await.unwrap().guild().unwrap().name,
             message.author.name,
             message.content);
 
