@@ -7,7 +7,7 @@ extern crate regex;
 extern crate lazy_static;
 mod utils;
 use regex::Regex;
-use serenity::{Client, framework, client::{EventHandler, Context}, model::channel::Message, Error};
+use serenity::{Client, framework, client::{EventHandler, Context}, model::{channel::Message, prelude::Ready}, Error};
 use log::{info,error};
 use lazy_static::lazy_static;
 
@@ -20,17 +20,20 @@ async fn main() {
     env_logger::init();
     let config = utils::get_config();
     let client = Client::builder(config.token)
-        .framework(framework::StandardFramework::new());
-
+        .framework(framework::StandardFramework::new())
+        .event_handler(Handler);
     client.await.expect("Client build failed").start().await.expect("client start failed");
 }
 
-struct Handler {}
+struct Handler;
 
 #[serenity::async_trait]
 impl EventHandler for Handler {
+    async fn ready(&self, _context:Context, _ready:Ready){
+        info!("bot is ready");
+    }
     async fn message(&self, context: Context, message:Message){
-        info!("Message: [{}]({}): {}",
+        println!("Message: [{}]({}): {}",
             message.guild(&context).await.expect("The guild or message vanished as we queried it").name,
             message.author.name,
             message.content);

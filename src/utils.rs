@@ -16,7 +16,6 @@ use serde::{Serialize,Deserialize};
 use dirs::config_dir;
 use std::fs::read_to_string;
 
-
 #[derive(Serialize,Deserialize,Clone)]
 struct InternConfig{
     token:Option<String>
@@ -96,7 +95,8 @@ pub fn get_config()->Config{
             config = config.union(serde_json::from_str(file_dat.as_str()).unwrap());
         }
     }
-    config.expect("no config provided").verify().unwrap()
+    //this should be rewritten so users don't get bad error messages when they don't have a config
+    config.expect("no config provided").verify().expect("config was missing a value or otherwise couldn't be verified")
 }
 pub fn config_file_loc(filetype:&str) -> String {
     config_dir().unwrap()
