@@ -1,3 +1,5 @@
+#[cfg(test)]
+mod tests;
 extern crate serenity;
 extern crate tokio;
 extern crate serde;
@@ -5,7 +7,6 @@ extern crate log;
 extern crate env_logger;
 mod utils;
 mod prob;
-
 use serenity::{Client, framework, client::{EventHandler, Context}, model::{channel::Message, prelude::Ready}};
 use log::*;
 use prob::calc_spam_probability;
