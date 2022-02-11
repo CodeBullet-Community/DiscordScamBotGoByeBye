@@ -1,8 +1,9 @@
+#[cfg(test)]
+mod tests;
 extern crate log;
 extern crate serenity;
 extern crate lazy_static;
 extern crate regex;
-
 use log::*;
 use serenity::{Error, client::Context, model::prelude::*};
 use lazy_static::lazy_static;
@@ -40,11 +41,18 @@ pub async fn calc_spam_probability(message:&Message,context:&Context)->Result<f6
     else { 
         trace!("Basic user checks complete {} is not a mod or bot on {}",message.author.name, 
             message.guild(context).await.ok_or("Missing Guild").unwrap().name);
-        if message.content.contains("@everyone") 
-            && LINK_REGEX.is_match(message.content.as_str()){
+        let probability = calc_content_spam_prob(message.content.as_str());
+        if probability>0.9{
             debug!("\"{}\" from {} has been determined to be a spam message",message.content,message.author.name);
-            Ok(1.0)
         }
-        else {Ok(0.0)}
+        Ok(probability)
     }
+}
+pub fn calc_content_spam_prob(msg:&str)->f64 {
+        if msg.contains("@everyone") 
+            && LINK_REGEX.is_match(msg){
+            1.0
+        }
+        else {0.0}
+    
 }
