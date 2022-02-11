@@ -1,3 +1,5 @@
+#[cfg(test)]
+mod tests;
 extern crate serde;
 extern crate dirs;
 extern crate log;
