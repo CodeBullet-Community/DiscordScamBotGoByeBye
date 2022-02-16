@@ -7,7 +7,7 @@ extern crate log;
 extern crate env_logger;
 mod utils;
 mod prob;
-use serenity::{Client, framework, client::{EventHandler, Context}, model::{channel::Message, prelude::Ready}};
+use serenity::{Client, framework, client::{EventHandler, Context}, model::prelude::*};
 use log::*;
 use prob::calc_spam_probability;
 

@@ -79,6 +79,7 @@ impl<T:Combinable> Combinable for Option<T>{
 //level of priority for each config type if multiple are enabled and available
 // env > yaml > toml > ini > json
 pub fn get_config()->Config{
+    #[allow(unused_assignments)]
     let mut config:Option<InternConfig> = None;
     #[cfg(feature = "env")]
     {
@@ -120,6 +121,8 @@ pub fn get_config()->Config{
     //this should be rewritten so users don't get bad error messages when they don't have a config
     config.expect("no config provided").verify().expect("config was missing a value or otherwise couldn't be verified")
 }
+
+#[allow(dead_code)]
 pub fn config_file_loc(filetype:&str) -> String {
     let loc = config_dir().unwrap()
         .join(env!("CARGO_PKG_NAME"))
