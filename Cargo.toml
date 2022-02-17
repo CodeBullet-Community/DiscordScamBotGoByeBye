@@ -23,7 +23,7 @@ lazy_static = "1.4"
 #features are to enable config to be gained from a selection of config files
 #toml isn't a feature because it's a crate
 [features]
-default = ["env"]
+default = ["env", "yaml"]
 all = ["env", "yaml", "toml", "ini", "json"]
 env = ["envy"]
 yaml = ["serde_yaml"]

@@ -18,7 +18,9 @@ use std::fmt::Debug;
 use serde::{Serialize,Deserialize};
 use dirs::config_dir;
 use log::*;
-
+//read_to_string is used but depending on specified features rust may give a warning
+#[allow(unused_imports)]
+use std::fs::read_to_string;
 
 #[derive(Serialize,Deserialize,Clone)]
 struct InternConfig{
