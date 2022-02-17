@@ -1,0 +1,25 @@
+name: CI testing
+
+on: 
+  push:
+    branches:
+      - master
+      - dev
+  pull_request:
+    branches:
+      - master
+      - dev
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v2
+      - name: Install Toolchain
+        uses: actions-rs/toolchain@v1
+      - name: Test Dev
+        run: cargo test --features all
+      - name: Test Release
+        run: cargo test --release --features all
+
