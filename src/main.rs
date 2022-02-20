@@ -23,6 +23,7 @@ async fn main() {
     client.await.expect("Client build failed").start().await.expect("client start failed");
 }
 
+/// The event handler
 struct Handler;
 
 #[serenity::async_trait]
