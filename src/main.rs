@@ -69,6 +69,7 @@ impl EventHandler for Handler {
                     Ok(_)=>{},
                     Err(_)=>break
                 }
+                debug!("deleting message '{}' by user '{}'",message.content, message.member(&context).await.unwrap().display_name());
             }
         }
     }

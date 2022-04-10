@@ -9,7 +9,7 @@ use serenity::{model::channel::Message, client::Context};
 pub struct RegexFilter(pub Regex);
 
 impl FilterTrait for RegexFilter {
-    fn should_act(&self, message:&Message, context:&Context)->bool{
+    fn should_act(&self, message:&Message, _context:&Context)->bool{
         return self.0.is_match(message.content.as_str())
     }
 }
