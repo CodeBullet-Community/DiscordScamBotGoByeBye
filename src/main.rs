@@ -14,7 +14,6 @@ mod filters;
 
 use serenity::{Client, framework, client::{EventHandler, Context}, model::prelude::*};
 use log::*;
-use prob::calc_spam_probability;
 use filters::{regex_filter,ping_filter};
 use crate::filter_trait::FilterTrait;
 
@@ -24,7 +23,10 @@ async fn main() {
         //sadly this seems the cleanest way to initialize this
         let mut tmp:Vec<Box<dyn FilterTrait>> = Vec::new();
         //such nested method calls it's disgusting
-        tmp.push(Box::new(ping_filter::EveryonePingFilter.chain(regex_filter::RegexFilter(regex::Regex::new("http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|)+\\.([a-zA-Z]+)").expect("Regex failed to compile unexpectedly")))));
+        tmp.push(Box::new(ping_filter::EveryonePingFilter
+                .chain(regex_filter::RegexFilter(
+                        regex::Regex::new("http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|)+\\.([a-zA-Z]+)")
+                        .expect("Regex failed to compile unexpectedly")))));
         tmp
     };
 
@@ -61,22 +63,12 @@ impl EventHandler for Handler {
             message.channel(&context).await.unwrap().guild().unwrap().name,
             message.author.name,
             message.content);
-        
-        let prob:f64 = match calc_spam_probability(&message,&context).await{
-            Ok(v)=>v,
-            Err(e)=>{
-                error!("got error calculating spam probability: {} with message {}[{}]({}):{}", e,
-                    message.guild(&context).await.expect("The guild or message vanished as we queried it").name,
-                    message.channel(&context).await.unwrap().guild().unwrap().name,
-                    message.author.name,
-                    message.content);
-                return
-            }
-        };
-        if prob > 0.5 {
-            match message.delete(context).await {
-                Ok(_)=>{},
-                Err(err)=> error!("Error on message delete: {}",err),
+        for filter in &self.filters{
+            if filter.should_act(&message, &context){
+                match message.delete(&context).await{
+                    Ok(_)=>{},
+                    Err(_)=>break
+                }
             }
         }
     }
