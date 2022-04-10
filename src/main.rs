@@ -14,7 +14,7 @@ mod filters;
 
 use serenity::{Client, framework, client::{EventHandler, Context}, model::prelude::*};
 use log::*;
-use filters::{regex_filter,ping_filter};
+use filters::{regex_filter,ping_filter,role_filter, bot_filter};
 use crate::filter_trait::FilterTrait;
 
 #[tokio::main]
@@ -23,10 +23,13 @@ async fn main() {
         //sadly this seems the cleanest way to initialize this
         let mut tmp:Vec<Box<dyn FilterTrait>> = Vec::new();
         //such nested method calls it's disgusting
-        tmp.push(Box::new(ping_filter::EveryonePingFilter
+        tmp.push(Box::new(
+                ping_filter::EveryonePingFilter
                 .chain(regex_filter::RegexFilter(
                         regex::Regex::new("http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|)+\\.([a-zA-Z]+)")
-                        .expect("Regex failed to compile unexpectedly")))));
+                        .expect("Regex failed to compile unexpectedly")))
+                .chain(role_filter::RoleFilter::from("Moderator").negate())
+                .chain(bot_filter::BotFilter.negate())));
         tmp
     };
 

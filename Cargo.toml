@@ -1,6 +1,6 @@
 [package]
 name = "b_cop"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -20,6 +20,7 @@ serde_json = {version = "1.0", optional = true}
 serde_ini = {version = "0.2", optional = true}
 regex = "1"
 lazy_static = "1.4"
+futures = {version = "0.3", features = ["executor"]}
 #features are to enable config to be gained from a selection of config files
 #toml isn't a feature because it's a crate
 [features]
