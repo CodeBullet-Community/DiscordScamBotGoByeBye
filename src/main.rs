@@ -25,11 +25,11 @@ async fn main() {
         //such nested method calls it's disgusting
         tmp.push(Box::new(
                 ping_filter::EveryonePingFilter
-                .chain(regex_filter::RegexFilter(
+                .and(regex_filter::RegexFilter(
                         regex::Regex::new("http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|)+\\.([a-zA-Z]+)")
                         .expect("Regex failed to compile unexpectedly")))
-                .chain(role_filter::RoleFilter::from("Moderator").negate())
-                .chain(bot_filter::BotFilter.negate())));
+                .and(role_filter::RoleFilter::from("Moderator").negate())
+                .and(bot_filter::BotFilter.negate())));
         tmp
     };
 
