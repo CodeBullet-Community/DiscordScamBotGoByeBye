@@ -19,19 +19,12 @@ use crate::filter_trait::FilterTrait;
 
 #[tokio::main]
 async fn main() {
-    let filters = {
-        //sadly this seems the cleanest way to initialize this
-        let mut tmp:Vec<Box<dyn FilterTrait>> = Vec::new();
-        //such nested method calls it's disgusting
-        tmp.push(Box::new(
-                ping_filter::EveryonePingFilter
-                .and(regex_filter::RegexFilter(
-                        regex::Regex::new("http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|)+\\.([a-zA-Z]+)")
-                        .expect("Regex failed to compile unexpectedly")))
-                .and(role_filter::RoleFilter::from("Moderator").negate())
-                .and(bot_filter::BotFilter.negate())));
-        tmp
-    };
+    let filter = ping_filter::EveryonePingFilter
+        .and(regex_filter::RegexFilter(
+            regex::Regex::new("http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|)+\\.([a-zA-Z]+)")
+            .expect("Regex failed to compile unexpectedly")))
+        .and(role_filter::RoleFilter::from("Moderator").negate())
+        .and(bot_filter::BotFilter.negate());
 
     env_logger::init();
     debug!("Logger initialized");
@@ -40,23 +33,23 @@ async fn main() {
     let client = Client::builder(config.token)
         .framework(framework::StandardFramework::new())
         //using default value temporarily
-        .event_handler(Handler::new(filters));
+        .event_handler(Handler::new(filter));
     client.await.expect("Client build failed").start().await.expect("client start failed");
 }
 
 /// The event handler
-struct Handler{
-    filters: Vec<Box<dyn FilterTrait>>
+struct Handler<T>where T:FilterTrait{
+    filter: T
 }
 
-impl Handler {
-    fn new(filters:Vec<Box<dyn FilterTrait>>)->Self{
-        Handler{filters}
+impl<T> Handler<T> where T:FilterTrait {
+    fn new(filter:T)->Self{
+        Handler{filter}
     }
 }
 
 #[serenity::async_trait]
-impl EventHandler for Handler {
+impl<T> EventHandler for Handler<T> where T:FilterTrait {
     async fn ready(&self, _context:Context, _ready:Ready){
         info!("Bot is ready");
     }
