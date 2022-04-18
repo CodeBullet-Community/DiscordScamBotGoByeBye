@@ -21,6 +21,7 @@ serde_ini = {version = "0.2", optional = true}
 regex = "1"
 lazy_static = "1.4"
 futures = {version = "0.3", features = ["executor"]}
+async-trait = "0.1.53"
 #features are to enable config to be gained from a selection of config files
 #toml isn't a feature because it's a crate
 [features]

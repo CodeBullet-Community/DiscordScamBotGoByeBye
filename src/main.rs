@@ -59,7 +59,7 @@ impl<T> EventHandler for Handler<T> where T:FilterTrait {
             message.channel(&context).await.unwrap().guild().unwrap().name,
             message.author.name,
             message.content);
-        if self.filter.should_act(&message, &context){
+        if self.filter.should_act(&message, &context).await{
             match message.delete(&context).await{
                 //we don't care if result is okay or err
                 Ok(_)=>{},

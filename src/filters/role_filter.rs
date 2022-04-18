@@ -2,18 +2,19 @@ extern crate serenity;
 extern crate futures;
 
 use crate::filter_trait::FilterTrait;
-use futures::executor;
 use log::*;
 ///filter that selects for messages from a member with a particular role
 pub struct RoleFilter{role_name:String}
 
+#[async_trait::async_trait]
 impl FilterTrait for RoleFilter{
-    fn should_act(&self, message:&serenity::model::channel::Message, context:&serenity::client::Context) -> bool {
-        if let Some(guild) = executor::block_on(message.guild(context)){
+    async fn should_act(&self, message:&serenity::model::channel::Message, context:&serenity::client::Context) -> bool {
+        if let Some(guild) = message.guild(context).await{
             let ret = if let Some(role) = guild.clone().role_by_name(self.role_name.as_str()).clone().as_ref(){
-                let has_role_monad = message.member.clone().map(|mem|mem.user.map(|u| executor::block_on(u.has_role(context, guild.id, role.id)))).flatten();
-                //annoyed I can't use flatten for this
-                has_role_monad.ok_or(serenity::prelude::SerenityError::Other("hush")).unwrap_or(Ok(false)).unwrap_or(false)
+                if let Ok(v) =  message.member(context).await{
+                    v.roles(context).await.map(|roles|roles.contains(role)).unwrap_or(false)
+                }
+                else {false}
             }
             else{
                 false
