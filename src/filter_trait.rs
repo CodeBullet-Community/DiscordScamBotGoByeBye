@@ -25,6 +25,13 @@ pub trait FilterTrait where Self:Send+Sync{
 pub struct AndFilter<T,U>(T, U) where T:FilterTrait, U:FilterTrait;
 #[async_trait::async_trait]
 impl<T,U> FilterTrait for AndFilter<T,U> where T:FilterTrait, U:FilterTrait {
+    #[cfg(debug_assertions)]
+    async fn should_act(&self, message:&Message, context:&Context) ->bool {
+        let cond1 = self.0.should_act(message, context).await;
+        let cond2 = self.1.should_act(message, context).await;
+        return cond1 && cond2
+    }
+    #[cfg(not(debug_assertions))]
     async fn should_act(&self, message:&Message, context:&Context) ->bool {
         return self.0.should_act(message, context).await && self.1.should_act(message, context).await
     }
@@ -44,16 +51,30 @@ impl<T> FilterTrait for NegateFilter<T> where T:FilterTrait{
 pub struct OrFilter<T,U>(T,U) where T:FilterTrait, U:FilterTrait;
 #[async_trait::async_trait]
 impl<T,U> FilterTrait for OrFilter<T,U> where T:FilterTrait, U:FilterTrait{
+    #[cfg(debug_assertions)]
     async fn should_act(&self, message:&Message, context:&Context) ->bool {
-        self.0.should_act(message, context).await || self.1.should_act(message, context).await
+        let cond1 = self.0.should_act(message, context).await;
+        let cond2 = self.1.should_act(message, context).await;
+        return cond1 || cond2
+    }
+    #[cfg(not(debug_assertions))]
+    async fn should_act(&self, message:&Message, context:&Context) ->bool {
+        return self.0.should_act(message, context).await || self.1.should_act(message, context).await
     }
 }
 
 pub struct XorFilter<T,U>(T,U) where T:FilterTrait, U:FilterTrait;
 #[async_trait::async_trait]
 impl<T,U> FilterTrait for XorFilter<T,U> where T:FilterTrait, U:FilterTrait{
+    #[cfg(debug_assertions)]
     async fn should_act(&self, message:&Message, context:&Context) ->bool {
-        self.0.should_act(message, context).await ^ self.1.should_act(message, context).await
+        let cond1 = self.0.should_act(message, context).await;
+        let cond2 = self.1.should_act(message, context).await;
+        return cond1 ^ cond2
+    }
+    #[cfg(not(debug_assertions))]
+    async fn should_act(&self, message:&Message, context:&Context) ->bool {
+        return self.0.should_act(message, context).await ^ self.1.should_act(message, context).await
     }
 }
 
