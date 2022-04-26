@@ -9,7 +9,7 @@ pub struct BotFilter;
 #[async_trait::async_trait]
 impl FilterTrait for BotFilter{
     async fn should_act(&self, message:&serenity::model::channel::Message, context:&serenity::client::Context) -> bool {
-        let ret = message.member.clone().map(|mem|mem.user.map(|u|u.bot)).flatten().unwrap_or(false);
+        let ret = message.clone().member(context).await.map(|mem|mem.user.bot).unwrap_or(false);
         trace!("is bot {}", ret);
         ret
     }

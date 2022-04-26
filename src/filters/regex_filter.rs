@@ -13,7 +13,7 @@ pub struct RegexFilter(pub Regex);
 impl FilterTrait for RegexFilter {
     async fn should_act(&self, message:&Message, _context:&Context)->bool{
         let did_match = self.0.is_match(message.content.as_str());
-        trace!("{}\t|||\t{}? - {}",message.content, self.0.as_str(), did_match);
+        trace!("{} ||| {}? - {}",message.content, self.0.as_str(), did_match);
         return did_match
     }
 }
