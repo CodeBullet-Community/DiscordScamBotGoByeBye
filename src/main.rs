@@ -7,7 +7,6 @@ extern crate log;
 extern crate env_logger;
 extern crate regex;
 mod utils;
-mod prob;
 mod filter_trait;
 mod filters;
 
@@ -25,12 +24,15 @@ async fn main() {
             .expect("Regex failed to compile unexpectedly")))
         .and(role_filter::RoleFilter::from("Moderator").negate())
         .and(bot_filter::BotFilter.negate());
-
     env_logger::init();
     debug!("Logger initialized");
     let config = utils::get_config();
     debug!("Config gotten");
-    let client = Client::builder(config.token)
+    let client = Client::builder(config.token,GatewayIntents::default()
+            .union(GatewayIntents::MESSAGE_CONTENT)
+            .union(GatewayIntents::GUILD_MESSAGES)
+            .union(GatewayIntents::GUILDS)
+            .union(GatewayIntents::GUILD_MEMBERS))
         .framework(framework::StandardFramework::new())
         //using default value temporarily
         .event_handler(Handler::new(filter));
@@ -55,7 +57,7 @@ impl<T> EventHandler for Handler<T> where T:FilterTrait {
     }
     async fn message(&self, context: Context, message:Message){
         info!("Message: {}\t[#{}]({}): {}",
-            message.guild(&context).await.expect("The guild or message vanished as we queried it").name,
+            message.guild(&context).expect("message not in a guild").name,
             message.channel(&context).await.unwrap().guild().unwrap().name,
             message.author.name,
             message.content);
