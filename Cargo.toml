@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 #features for serenity and tokio should be reviewed as needed
-serenity = "0.10"
+serenity = "0.11"
 serde = {version = "1.0", features = ["derive"]}
 tokio = {version = "1.16", features = ["full"]}
 log = "0.4"

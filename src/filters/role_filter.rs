@@ -9,10 +9,10 @@ pub struct RoleFilter{role_name:String}
 #[async_trait::async_trait]
 impl FilterTrait for RoleFilter{
     async fn should_act(&self, message:&serenity::model::channel::Message, context:&serenity::client::Context) -> bool {
-        if let Some(guild) = message.guild(context).await{
+        if let Some(guild) = message.guild(context){
             let ret = if let Some(role) = guild.clone().role_by_name(self.role_name.as_str()).clone().as_ref(){
                 if let Ok(v) =  message.member(context).await{
-                    v.roles(context).await.map(|roles|roles.contains(role)).unwrap_or(false)
+                    v.roles(context).map(|roles|roles.contains(role)).unwrap_or(false)
                 }
                 else {false}
             }
