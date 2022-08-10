@@ -23,6 +23,8 @@ use log::*;
 use std::fs::read_to_string;
 
 #[derive(Serialize,Deserialize,Clone)]
+/// An mirror of Config that has attrs that are optional to allow for relatively easy unification
+/// between multiple of them to support multiple config files at the same time
 struct InternConfig{
     token:Option<String>
 }
@@ -32,6 +34,7 @@ pub struct Config {
 #[derive(Debug)]
 enum ConfigAttrMissing{TOKEN}
 impl InternConfig{
+    /// Convert from InternConfig to config
     fn verify(self)->Result<Config,ConfigAttrMissing> {
         let token = match self.token {
             Some(token)=>token,
@@ -51,6 +54,7 @@ impl Debug for InternConfig {
         Ok(())
     }
 }
+/// Trait that allows for 2 of the same type struct to merge in some meaningful way
 trait Combinable {
     fn union(self, other:Self)->Self;
 }
@@ -80,6 +84,12 @@ impl<T:Combinable> Combinable for Option<T>{
 }
 //level of priority for each config type if multiple are enabled and available
 // env > yaml > toml > ini > json
+/// Provides a Config object generated from the config file right now defaulting to reading from
+/// $(config_dir)/$(crate_name)/config.$(file_type) read dirs config_dir documentation for more
+/// info on what/where that is, file_type is all file_types that were compiled as features into the
+/// bot with a priority order(earlier is higher) between configs of env_vars(not a file, read envy documentation),
+/// yaml, toml, ini and finally json with higher priority configuration overriding lover priority
+/// configuration
 pub fn get_config()->Config{
     #[allow(unused_assignments)]
     let mut config:Option<InternConfig> = None;
@@ -125,6 +135,7 @@ pub fn get_config()->Config{
 }
 
 #[allow(dead_code)]
+/// provides the default config file location(currently the only config file location) to get_config based on some file type
 pub fn config_file_loc(filetype:&str) -> String {
     let loc = config_dir().unwrap()
         .join(env!("CARGO_PKG_NAME"))
